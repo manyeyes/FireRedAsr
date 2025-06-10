@@ -1,11 +1,8 @@
 ﻿// See https://github.com/manyeyes for more information
 // Copyright (c)  2025 by manyeyes
-using KaldiNativeFbankSharp;
-//using SpeechFeatures;
-using System.Data;
 using FireRedAsr.Model;
-using System.Drawing;
-using System;
+using SpeechFeatures;
+using System.Data;
 
 namespace FireRedAsr
 {

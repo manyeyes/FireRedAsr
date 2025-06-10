@@ -23,7 +23,7 @@ namespace FireRedAsr.Examples
             if (samples == null)
             {
                 samples = new List<float[]>();
-                for (int i = 0; i < 10; i++)
+                for (int i = 0; i < 3; i++)
                 {
                     string wavFilePath = string.Format(applicationBase + "./" + modelName + "/test_wavs/{0}.wav", i.ToString());
                     if (!File.Exists(wavFilePath))

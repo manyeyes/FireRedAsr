@@ -9,9 +9,49 @@ c# library for decoding FireRedASR's AED-L Model，used in speech recognition (A
 | ------------ | ------------ | ------------ | ------------ |
 |  fireredasr-aed-large-zh-en-onnx-offline-20250124 | 非流式  | 中文、英文  |[modelscope](https://www.modelscope.cn/models/manyeyes/fireredasr-aed-large-zh-en-onnx-offline-20250124 "modelscope") |
 
-##### 使用方法
-1.下载模型到FireRedAsr.Examples项目文件夹，设置模型文件为“如果较新则复制”
-2.使用vs2022加载项目，运行FireRedAsr.Examples示例
+##### 如何使用
+###### 1.克隆项目源码
+```bash
+cd /path/to
+git clone https://github.com/manyeyes/FireRedASR.git
+```
+###### 2.下载上述列表中的模型到目录：/path/to/FireRedASR/FireRedASR.Examples
+```bash
+cd /path/to/FireRedASR/FireRedASR.Examples
+git clone https://www.modelscope.cn/manyeyes/[模型名称].git
+```
+###### 3.使用vs2022(或其他IDE)加载工程，
+###### 4.将模型目录中的文件设置为：复制到输出目录->如果较新则复制
+###### 5.修改示例中代码：string modelName =[模型目录名]
+###### 6.运行项目
+###### 7.如何调用
+参考:FireRedAsrExamples.cs中的示例代码
+###### 8.运行结果
+```
+朱立南在上市见面会上表示
+
+这是第一种第二种叫呃与always always什么意思啊
+
+好首先说一下刚才这个经理说完了这个销售问题咱再说一下咱们的商场问题首先咱们商场上半年业这个先各部门儿汇报一下就是业绩
+
+elapsed_milliseconds:4391.234375
+total_duration:21015.0625
+rtf:0.2089565222563578
+Hello, World!
+```
+###### 相关工程：
+* 语音端点检测，解决长音频合理切分的问题，项目地址：[AliFsmnVad](https://github.com/manyeyes/AliFsmnVad "AliFsmnVad") 
+* 文本标点预测，解决识别结果没有标点的问题，项目地址：[AliCTTransformerPunc](https://github.com/manyeyes/AliCTTransformerPunc "AliCTTransformerPunc")
+
+###### 其他说明：
+
+测试用例：FireRedASR.Examples。
+测试CPU：Intel(R) Core(TM) i7-10750H CPU @ 2.60GHz   2.59 GHz
+支持平台：
+Windows 7 SP1或更高版本,
+macOS 10.13 (High Sierra) 或更高版本,ios等，
+Linux 发行版（需要特定的依赖关系，详见.NET 6支持的Linux发行版列表），
+Android（Android 5.0 (API 21) 或更高版本）。
 
 引用参考
 ----------
