@@ -1,8 +1,9 @@
 # FireRedAsr
-c# library for decoding FireRedASR's AED-L Model，used in speech recognition (ASR)
+FireRedAsr是一个用于解码FireRedASR AED-L模型的c#库，用于语音识别（ASR）
 
 ##### 简介：
-这是一个用于解码 FireRedASR's AED-L onnx 模型的c#库，使用c#编写，基于.net6.0，支持在多平台（包括windows、linux、android、macos、ios等）编译、调用。
+FireRedAsr 是一款基于 C# 开发的语音识别（ASR）库。该库兼容性优异，支持net461+、.NET6.0+等框架版本，不仅专注于高效完成语音识别任务，还具备出色的跨平台能力，支持在 Windows、Linux、Android、macOS、iOS 等多平台上进行编译与调用，适配场景广泛。
+其核心依赖的 FireRedASR-AED 模型，以平衡高性能与计算效率为设计目标，采用基于注意力机制的编码器 - 解码器（AED）架构，能够作为基于大语言模型（LLM）的语音模型中的高效语音表示模块，为语音识别任务提供稳定且优质的技术支撑
 
 ##### 支持的模型（ONNX）
 | 模型名称  |  类型 |  支持语言  | 下载地址  |
