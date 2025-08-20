@@ -7,8 +7,11 @@ using System;
 
 namespace FireRedAsr
 {
-    internal class AsrProjOfAED : IAsrProj
+    internal class AsrProjOfAED : IAsrProj, IDisposable
     {
+        // To detect redundant calls
+        private bool _disposed;
+
         private InferenceSession _encoderSession;
         private InferenceSession _decoderSession;
         private CustomMetadata _customMetadata;
@@ -147,7 +150,7 @@ namespace FireRedAsr
             }
             catch (Exception ex)
             {
-                //
+                throw new Exception("EncoderProj failed", ex);
             }
             return encoderOutput;
         }
@@ -236,7 +239,7 @@ namespace FireRedAsr
             }
             catch (Exception ex)
             {
-                //
+                throw new Exception("DecoderProj failed", ex);
             }
             return decoderOutputEntity;
         }
@@ -250,6 +253,34 @@ namespace FireRedAsr
             }
             //score += prob[hyp.Length * decode_out_len + eos];
             return score;
+        }
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_disposed)
+            {
+                if (disposing)
+                {
+                    if (_encoderSession != null)
+                    {
+                        _encoderSession.Dispose();
+                    }
+                    if (_decoderSession != null)
+                    {
+                        _decoderSession.Dispose();
+                    }
+                }
+                _disposed = true;
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
+        ~AsrProjOfAED()
+        {
+            Dispose(_disposed);
         }
     }
 }

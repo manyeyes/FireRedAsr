@@ -1,8 +1,6 @@
 ﻿// See https://github.com/manyeyes for more information
 // Copyright (c)  2025 by manyeyes
 using FireRedAsr.Model;
-using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 namespace FireRedAsr
@@ -11,9 +9,10 @@ namespace FireRedAsr
     /// offline recognizer package
     /// Copyright (c)  2025 by manyeyes
     /// </summary>
-    public class OfflineRecognizer
+    public class OfflineRecognizer : IDisposable
     {
-        private readonly ILogger<OfflineRecognizer> _logger;
+        private bool _disposed;
+
         private string[] _tokens;
         private string _mvnFilePath;
         private IAsrProj _asrProj;
@@ -24,8 +23,6 @@ namespace FireRedAsr
             AsrModel asrModel = new AsrModel(encoderFilePath, decoderFilePath, configFilePath: configFilePath, threadsNum: threadsNum);
             _tokens = File.ReadAllLines(tokensFilePath);
             _asrProj = new AsrProjOfAED(asrModel);
-            ILoggerFactory loggerFactory = new LoggerFactory();
-            _logger = new Logger<OfflineRecognizer>(loggerFactory);
         }
 
         public OfflineStream CreateOfflineStream()
@@ -43,7 +40,7 @@ namespace FireRedAsr
         }
         public List<OfflineRecognizerResultEntity> GetResults(List<OfflineStream> streams)
         {
-            this._logger.LogInformation("get features begin");
+            //this._logger.LogInformation("get features begin");
             this.Forward(streams);
             List<OfflineRecognizerResultEntity> offlineRecognizerResultEntities = this.DecodeMulti(streams);
             return offlineRecognizerResultEntities;
@@ -133,7 +130,7 @@ namespace FireRedAsr
             }
             catch (Exception ex)
             {
-                //
+                throw new Exception("Offline recognition failed", ex);
             }
 
         }
@@ -193,6 +190,41 @@ namespace FireRedAsr
                 return true;
             else
                 return false;
+        }
+        public void DisposeOfflineStream(OfflineStream offlineStream)
+        {
+            if (offlineStream != null)
+            {
+                offlineStream.Dispose();
+            }
+        }
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_disposed)
+            {
+                if (disposing)
+                {
+                    if (_asrProj != null)
+                    {
+                        _asrProj.Dispose();
+                    }
+                    if (_tokens != null)
+                    {
+                        _tokens = null;
+                    }
+                }
+                _disposed = true;
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
+        ~OfflineRecognizer()
+        {
+            Dispose(_disposed);
         }
     }
 }
