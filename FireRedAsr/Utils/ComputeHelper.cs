@@ -1,14 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Diagnostics;
+using System.IO;
+// 根据不同框架引入对应命名空间
+#if NETSTANDARD2_0 || NETSTANDARD2_1 || NETCOREAPP3_1 || NET461_OR_GREATER
+// SharpZipLib的命名空间（仅在netstandard2.0/2.1/netcoreapp3.1下生效）
+using ICSharpCode.SharpZipLib.Zip;
+#else
+// 系统原生ZLibStream的命名空间
 using System.IO.Compression;
-using System.Linq;
+#endif
 using System.Text;
-using System.Threading.Tasks;
 
 namespace FireRedAsr.Utils
 {
-    internal class ComputeHelper
+    internal static class ComputeHelper
     {
         public static int ExactDiv(int x, int y)
         {
@@ -55,7 +59,7 @@ namespace FireRedAsr.Utils
                 throw new ArgumentException("dim must be -1 or 0 for a one-dimensional array");
             }
             // Find the maximum value to avoid numerical overflow 
-            double maxVal = arr.Max(); 
+            double maxVal = arr.Max();
             // Compute the sum of exp(arr[i] - maxVal)
             double sumExp = arr.Sum(x => Math.Exp(x - maxVal));
             // Compute the final log sum
@@ -71,16 +75,38 @@ namespace FireRedAsr.Utils
 
             using (var memoryStream = new MemoryStream())
             {
+#if NETSTANDARD2_0 || NETSTANDARD2_1 || NETCOREAPP3_1 || NET461_OR_GREATER
+                // SharpZipLib（only in netstandard2.0/2.1 take effect）
+                using (var zlibStream = new ZipInputStream(memoryStream, StringCodec.Default))
+#else
+                // 系统原生ZLibStream的命名空间（在netcoreapp3.1等框架下生效）
                 using (var zlibStream = new ZLibStream(memoryStream, CompressionLevel.Fastest))
+#endif
                 {
                     zlibStream.Write(originalBytes, 0, originalBytes.Length);
-                    zlibStream.Flush(); 
+                    zlibStream.Flush();
                 }
                 byte[] compressedBytes = memoryStream.ToArray(); // Get the compressed byte array
-                compressionRatio = (float)originalBytes.Length / compressedBytes.Length; 
+                compressionRatio = (float)originalBytes.Length / compressedBytes.Length;
                 // If decompression is needed, ZlibStream can be used again with CompressionMode set to Decompress.
             }
             return compressionRatio;
+        }
+        /// <summary>
+        /// 跳过序列的最后一个元素（兼容 .NET Standard 2.0）
+        /// </summary>
+        /// <typeparam name="T">序列元素类型</typeparam>
+        /// <param name="source">源序列</param>
+        /// <returns>排除最后一个元素的新序列</returns>
+        public static IEnumerable<T> SkipLastOne<T>(this IList<T> source)
+        {
+            if (source == null)
+                throw new ArgumentNullException(nameof(source));
+
+            for (int i = 0; i < source.Count - 1; i++)
+            {
+                yield return source[i];
+            }
         }
     }
 }

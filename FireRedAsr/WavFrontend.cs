@@ -2,7 +2,7 @@
 // Copyright (c)  2025 by manyeyes
 using FireRedAsr.Model;
 using SpeechFeatures;
-using System.Data;
+using FireRedAsr.Utils;
 
 namespace FireRedAsr
 {
@@ -82,13 +82,13 @@ namespace FireRedAsr
                     }
                     if (strLine.StartsWith("<LearnRateCoef>") && i == 1)
                     {
-                        string[] add_shift_line = strLine.Substring(strLine.IndexOf("[") + 1, strLine.LastIndexOf("]") - strLine.IndexOf("[") - 1).Split(" ");
+                        string[] add_shift_line = strLine.Substring(strLine.IndexOf("[") + 1, strLine.LastIndexOf("]") - strLine.IndexOf("[") - 1).Split(' ');
                         means_list = add_shift_line.Where(x => !string.IsNullOrEmpty(x)).Select(x => double.Parse(x.Trim())).ToList();
                         continue;
                     }
                     if (strLine.StartsWith("<LearnRateCoef>") && i == 2)
                     {
-                        string[] rescale_line = strLine.Substring(strLine.IndexOf("[") + 1, strLine.LastIndexOf("]") - strLine.IndexOf("[") - 1).Split(" ");
+                        string[] rescale_line = strLine.Substring(strLine.IndexOf("[") + 1, strLine.LastIndexOf("]") - strLine.IndexOf("[") - 1).Split(' ');
                         vars_list = rescale_line.Where(x => !string.IsNullOrEmpty(x)).Select(x => double.Parse(x.Trim())).ToList();
                         continue;
                     }
@@ -96,7 +96,11 @@ namespace FireRedAsr
             }
             double count = means_list.Last();
             double floor = 1e-20;
+#if NETSTANDARD2_0 || NET461_OR_GREATER
+            means_list = means_list.Select(x => x / count).ToList().SkipLastOne().ToList();
+#else
             means_list = means_list.Select(x => x / count).SkipLast(1).ToList();
+#endif
             vars_list = vars_list.Zip(means_list, (a, b) => a / count - b * b).ToList();
             vars_list = vars_list.Select(x => (double)(x < floor ? floor : x)).ToList();
             vars_list = vars_list.Select(x => (double)(1.0F / Math.Sqrt(x))).ToList();
@@ -105,6 +109,7 @@ namespace FireRedAsr
             cmvnEntity.Vars = vars_list;
             return cmvnEntity;
         }
+        
         protected virtual void Dispose(bool disposing)
         {
             if (disposing)
