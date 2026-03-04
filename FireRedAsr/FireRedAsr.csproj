@@ -17,12 +17,13 @@
 				<Nullable>enable</Nullable>
 				<!-- info -->
 				<PackageId>ManySpeech.FireRedAsr</PackageId>
-				<Version>1.0.2</Version>
+				<Version>1.0.5</Version>
 				<Authors>manyeyes contributors</Authors>
 				<Company>manyeyes contributors</Company>
 				<Copyright>Copyright © manyeyes contributors</Copyright>
 				<Summary>c# library for decoding FireRedASR's AED-L Model，used in speech recognition (ASR)</Summary>
 				<Description>c# library for decoding FireRedASR's AED-L Model，used in speech recognition (ASR).FireRedASR is a family of open-source industrial-grade automatic speech recognition (ASR) models supporting Mandarin, Chinese dialects and English, achieving a new state-of-the-art (SOTA) on public Mandarin ASR benchmarks, while also offering outstanding singing lyrics recognition capability.</Description>
+				<Tags>speech recognition asr fireredasr AED-L ai local privacy</Tags>
 				<PackageProjectUrl>https://github.com/manyeyes/FireRedAsr</PackageProjectUrl>
 				<RepositoryUrl>https://github.com/manyeyes/FireRedAsr</RepositoryUrl>
 				<IncludeSymbols>true</IncludeSymbols>
@@ -46,7 +47,7 @@
 
 		<ItemGroup>
 				<PackageReference Include="ManySpeech.SpeechFeatures" Version="1.1.7" />
-				<PackageReference Include="Microsoft.ML.OnnxRuntime" Version="1.22.0" />
+				<PackageReference Include="Microsoft.ML.OnnxRuntime" Version="1.22.*" />
 				<!--<PackageReference Include="YamlDotNet" Version="16.3.0" />
 				<PackageReference Include="Vecc.YamlDotNet.Analyzers.StaticGenerator" Version="16.3.0" />-->
 				<!-- System.Text.Json：仅为不原生支持的框架添加引用 -->
