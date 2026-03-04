@@ -40,7 +40,7 @@ namespace AliCTTransformerPunc.Utils
             T? info = default(T);
             ////Deserializer yamlDeserializer = new Deserializer();
             //IDeserializer yamlDeserializer = new StaticDeserializerBuilder(new YamlStaticContext()).WithNamingConvention(UnderscoredNamingConvention.Instance).Build();
-            if (!string.IsNullOrEmpty(yamlFilePath) && yamlFilePath.IndexOf("/") < 0)
+            if (!string.IsNullOrEmpty(yamlFilePath) && yamlFilePath.IndexOf("/") < 0 && yamlFilePath.IndexOf("\\") < 0)
             {
                 var assembly = Assembly.GetExecutingAssembly();
                 var stream = assembly.GetManifestResourceStream(yamlFilePath) ??
@@ -66,7 +66,7 @@ namespace AliCTTransformerPunc.Utils
         public static T? ReadJson<T>(string jsonFilePath)
         {
             T? info = default(T);
-            if (!string.IsNullOrEmpty(jsonFilePath) && jsonFilePath.IndexOf("/") < 0)
+            if (!string.IsNullOrEmpty(jsonFilePath) && jsonFilePath.IndexOf("/") < 0 && jsonFilePath.IndexOf("\\") < 0)
             {
                 var assembly = Assembly.GetExecutingAssembly();
                 var stream = assembly.GetManifestResourceStream(jsonFilePath) ??
@@ -91,7 +91,7 @@ namespace AliCTTransformerPunc.Utils
         public static string[] ReadTokens(string tokensFilePath)
         {
             string[] tokens = null;
-            if (!string.IsNullOrEmpty(tokensFilePath) && tokensFilePath.IndexOf("/") < 0)
+            if (!string.IsNullOrEmpty(tokensFilePath) && tokensFilePath.IndexOf("/") < 0 && tokensFilePath.IndexOf("\\") < 0)
             {
                 var assembly = Assembly.GetExecutingAssembly();
                 var stream = assembly.GetManifestResourceStream(tokensFilePath) ??

@@ -20,6 +20,13 @@ namespace FireRedAsr.Utils
             int max_speech_length = floats.Where(x => x != null).Max(x => x.Length) + 80 * tailLen;
             int speech_length = max_speech_length * floats.Count;
             float[] speech = new float[speech_length];
+            // 填充极小值（可选择交替符号避免直流偏移）
+            float epsilon = 1e-3f;
+            for (int i = 0; i < speech.Length; i++)
+            {
+                // 每隔一个采样点取反，减少直流分量
+                speech[i] = (i % 2 == 0) ? epsilon : -epsilon;
+            }
             float[,] xxx = new float[floats.Count, max_speech_length];
             for (int i = 0; i < floats.Count; i++)
             {
@@ -53,7 +60,6 @@ namespace FireRedAsr.Utils
                     s++;
                 }
             }
-            speech = speech.Select(x => x == 0 ? -23.025850929940457F : x).ToArray();
             return speech;
         }
 
