@@ -8,9 +8,10 @@ namespace FireRedAsr.Examples
         {
             string encoderFilePath = applicationBase + "./" + modelName + "/encoder.int8.onnx";
             string decoderFilePath = applicationBase + "./" + modelName + "/decoder.int8.onnx";
+            string ctcFilePath = applicationBase + "./" + modelName + "/ctc.int8.onnx";
             string mvnFilePath = applicationBase + "./" + modelName + "/am.mvn";
             string tokensFilePath = applicationBase + "./" + modelName + "/tokens.txt";
-            FireRedAsr.OfflineRecognizer offlineRecognizer = new FireRedAsr.OfflineRecognizer(encoderFilePath, decoderFilePath, mvnFilePath, tokensFilePath, threadsNum: 1);
+            FireRedAsr.OfflineRecognizer offlineRecognizer = new FireRedAsr.OfflineRecognizer(encoderFilePath: encoderFilePath, decoderFilePath: decoderFilePath, mvnFilePath: mvnFilePath, tokensFilePath: tokensFilePath, ctcFilePath: ctcFilePath, threadsNum: 1);
             return offlineRecognizer;
         }
 

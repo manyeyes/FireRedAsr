@@ -16,6 +16,7 @@ namespace FireRedAsr.Examples
                 }
                 string encoderFilePath = modelBasePath + "./" + modelName + "/encoder.int8.onnx";
                 string decoderFilePath = modelBasePath + "./" + modelName + "/decoder.int8.onnx";
+                string ctcFilePath = applicationBase + "./" + modelName + "/ctc.int8.onnx";
                 string configFilePath = modelBasePath + "./" + modelName + "/config.json";
                 string mvnFilePath = modelBasePath + "./" + modelName + "/am.mvn";
                 string tokensFilePath = modelBasePath + "./" + modelName + "/tokens.txt";
@@ -43,7 +44,7 @@ namespace FireRedAsr.Examples
 
                     // Process encoder path (priority: containing modelAccuracy>last one that matches prefix)
                     var encoderCandidates = fileInfos
-                        .Where(f => f.FileName.StartsWith("model") && !f.FileName.Contains("_eb"))
+                        .Where(f => f.FileName.StartsWith("model") && !f.FileName.Contains("encoder"))
                         .ToList();
                     if (encoderCandidates.Any())
                     {
@@ -55,13 +56,24 @@ namespace FireRedAsr.Examples
 
                     // Process decoder path
                     var decoderCandidates = fileInfos
-                        .Where(f => f.FileName.StartsWith("model_eb"))
+                        .Where(f => f.FileName.StartsWith("decoder"))
                         .ToList();
                     if (decoderCandidates.Any())
                     {
                         var preferredDecoder = decoderCandidates
                             .LastOrDefault(f => f.FileName.Contains($".{modelAccuracy}."));
                         decoderFilePath = preferredDecoder?.TargetPath ?? decoderCandidates.Last().TargetPath;
+                    }
+
+                    // Process ctc path
+                    var ctcCandidates = fileInfos
+                        .Where(f => f.FileName.StartsWith("ctc"))
+                        .ToList();
+                    if (ctcCandidates.Any())
+                    {
+                        var preferredCtc = ctcCandidates
+                            .LastOrDefault(f => f.FileName.Contains($".{modelAccuracy}."));
+                        ctcFilePath = preferredCtc?.TargetPath ?? ctcCandidates.Last().TargetPath;
                     }
 
                     // Process config paths (take the last one that matches the prefix)
@@ -84,7 +96,7 @@ namespace FireRedAsr.Examples
                         return null;
                     }
                     TimeSpan start_time = new TimeSpan(DateTime.Now.Ticks);
-                    _offlineRecognizer = new OfflineRecognizer(encoderFilePath: encoderFilePath, decoderFilePath: decoderFilePath, configFilePath: configFilePath, mvnFilePath: mvnFilePath, tokensFilePath: tokensFilePath, threadsNum: threadsNum);
+                    _offlineRecognizer = new OfflineRecognizer(encoderFilePath: encoderFilePath, decoderFilePath: decoderFilePath, ctcFilePath: ctcFilePath, configFilePath: configFilePath, mvnFilePath: mvnFilePath, tokensFilePath: tokensFilePath, threadsNum: threadsNum);
                     TimeSpan end_time = new TimeSpan(DateTime.Now.Ticks);
                     double elapsed_milliseconds_init = end_time.TotalMilliseconds - start_time.TotalMilliseconds;
                     Console.WriteLine("init_models_elapsed_milliseconds:{0}", elapsed_milliseconds_init.ToString());
@@ -104,7 +116,7 @@ namespace FireRedAsr.Examples
             }
             return _offlineRecognizer;
         }
-        public static void OfflineRecognizer(string streamDecodeMethod = "one", string modelName = "paraformer-seaco-large-zh-timestamp-onnx-offline", string modelAccuracy = "int8", int threadsNum = 2, string[]? mediaFilePaths = null, string? modelBasePath = null)
+        public static void OfflineRecognizer(string streamDecodeMethod = "one", string modelName = "fireredasr2-aed-large-zh-en-int8-onnx-offline-20260212", string modelAccuracy = "int8", int threadsNum = 2, string[]? mediaFilePaths = null, string? modelBasePath = null)
         {
             if (string.IsNullOrEmpty(modelBasePath))
             {
@@ -118,7 +130,7 @@ namespace FireRedAsr.Examples
             }
             TimeSpan total_duration = new TimeSpan(0L);
             List<float[]>? samples = new List<float[]>();
-            List<string> paths= new List<string>();
+            List<string> paths = new List<string>();
             if (mediaFilePaths == null || mediaFilePaths.Count() == 0)
             {
                 mediaFilePaths = Directory.GetFiles(Path.Combine(modelBasePath, modelName, "test_wavs"));
@@ -165,7 +177,7 @@ namespace FireRedAsr.Examples
                         StringBuilder r = new StringBuilder();
                         r.Append("{");
                         r.Append($"\"text\": \"{result.Text}\",");
-                        r.Append($"\"tokens\":[{string.Join(",",result.Tokens.Select(x=>$"\"{x}\"").ToArray())}],");
+                        r.Append($"\"word\":[{string.Join(",", result.Tokens.Select(x => $"\"{x}\"").ToArray())}],");
                         r.Append($"\"timestamps\":[{string.Join(",", result.Timestamps.Select(x => $"[{x.First()},{x.Last()}]").ToArray())}]");
                         r.Append("}");
                         Console.WriteLine($"{r.ToString()}");

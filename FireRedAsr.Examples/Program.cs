@@ -25,10 +25,13 @@ namespace FireRedAsr.Examples
         private const string _modelBasePath = @"";// eg: path/to/directory. It is the root directory where the model is stored. If it is empty, the program root directory will be read by default.
                                                   // default-model
         private static Dictionary<string, string> _defaultOnlineModelName = new Dictionary<string, string>{
-            { "fireredasr", "fireredasr-aed-large-zh-en-onnx-offline-20250124" }
+            { "fireredasr", "fireredasr-aed-large-zh-en-onnx-offline-20250124" },
+            { "fireredasr2", "fireredasr2-aed-large-zh-en-int8-onnx-offline-20260212" }
         };
         private static Dictionary<string, string> _defaultOfflineModelName = new Dictionary<string, string>{
-            { "fireredasr", "fireredasr-aed-large-zh-en-onnx-offline-20250124" } };
+            { "fireredasr", "fireredasr-aed-large-zh-en-onnx-offline-20250124" },
+            { "fireredasr2", "fireredasr2-aed-large-zh-en-int8-onnx-offline-20260212" }
+        };
         private static int i = 0;
 
         [STAThread]
@@ -225,8 +228,8 @@ namespace FireRedAsr.Examples
             int threads = (int)config["threads"];
             string[] files = (string[])config["files"];
 
-            string defaultOnlineModelName = _defaultOnlineModelName.GetValueOrDefault("fireredasr"); ;
-            string defaultOfflineModelName = _defaultOfflineModelName.GetValueOrDefault("fireredasr"); ;
+            string defaultOnlineModelName = _defaultOnlineModelName.GetValueOrDefault("fireredasr2");
+            string defaultOfflineModelName = _defaultOfflineModelName.GetValueOrDefault("fireredasr2");
             if (_lang.ToLower() == "zh")
             {
                 Console.WriteLine($"===== 识别器配置 =====");
@@ -308,7 +311,7 @@ namespace FireRedAsr.Examples
                 Console.WriteLine($"  -threads <数量>          线程数（默认: 2，环境变量: {EnvThreads}）");
                 Console.WriteLine("  -files <文件1> <文件2>    输入媒体文件列表(如不指定，默认:自动检查并识别模型目录下test_wavs中的文件)");
                 Console.WriteLine("\n示例1:");
-                Console.WriteLine("  FireRedAsr.Examples.exe -type online -batch one -base /path/to/directory -model my-model -accuracy int8 -threads 2 -files /path/to/0.wav /path/to/1.wav");
+                Console.WriteLine("  FireRedAsr.Examples.exe -type offline -batch one -base /path/to/directory -model my-model -accuracy int8 -threads 2 -files /path/to/0.wav /path/to/1.wav");
                 Console.WriteLine("\n示例2（使用默认batch=one）:");
                 Console.WriteLine($"  set {EnvRecognizerType}=online && set {EnvModelBasePath}=/path/to/directory && FireRedAsr.Examples.exe");
                 Console.WriteLine($"\n*应用程序目录：{applicationBase}, 如果不指定-base, 请将下载的模型存放于此目录。");
@@ -327,8 +330,8 @@ namespace FireRedAsr.Examples
                 Console.WriteLine($"  -threads <count>         Number of threads (default: 2, environment variable: {EnvThreads})");
                 Console.WriteLine("  -files <file1> <file2>    List of input media files (if not specified, default: automatically check and recognize files in test_wavs under the model directory)");
                 Console.WriteLine("\nExample 1:");
-                Console.WriteLine("  FireRedAsr.Examples.exe -type online -batch one -base /path/to/directory -model my-model -accuracy int8 -threads 2 -files /path/to/0.wav /path/to/1.wav");
-                Console.WriteLine("\nExample 2 (use default batch=one):"); 
+                Console.WriteLine("  FireRedAsr.Examples.exe -type offline -batch one -base /path/to/directory -model my-model -accuracy int8 -threads 2 -files /path/to/0.wav /path/to/1.wav");
+                Console.WriteLine("\nExample 2 (use default batch=one):");
                 Console.WriteLine($"  set {EnvRecognizerType}=online && set {EnvModelBasePath}=/path/to/directory && FireRedAsr.Examples.exe");
                 Console.WriteLine($"\n*Application directory: {applicationBase}. If -base is not specified, please place the downloaded model in this directory.");
                 Console.WriteLine($"\n*Additional notes: Press Enter twice, and you can follow the prompts to proceed: 1. Select language; 2. Select recognizer type.");
