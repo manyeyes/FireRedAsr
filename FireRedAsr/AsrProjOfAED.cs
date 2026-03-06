@@ -288,8 +288,7 @@ namespace FireRedAsr
                             item.Add(row);
                         }
                         logitsList.Add(item);
-                    }
-                    logitsList = logitsList.Select(item => item = item.Select(x => x = ComputeHelper.LogCompute(ComputeHelper.SoftmaxCompute(x.Select(y => y / 1.25f).ToArray()))).ToList()).ToList();
+                    }                    
                     ctcOutputEntity.LogitsList = logitsList;
                 }
             }
